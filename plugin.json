@@ -1,0 +1,9 @@
+{
+  "id": "app-timer",
+  "name": "App Timer",
+  "description": "Close an app after a delay or at a time, once or on chosen days.",
+  "icon": "AlarmClock",
+  "color": "#c084fc",
+  "version": "1.0.0",
+  "minDeck": "0.8.0"
+}
