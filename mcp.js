@@ -1,4 +1,4 @@
-// plugins/app-timer/src/mcp.ts
+// src/mcp.ts
 var module = "app-closer";
 function register(server, deck) {
   const { z, ok, weekday, readJson, writeJson, newId, nextFire } = deck;
