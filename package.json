@@ -6,13 +6,17 @@
   "scripts": {
     "build": "deck-plugin build",
     "dev": "deck-plugin dev",
-    "install-local": "deck-plugin install"
+    "install-local": "deck-plugin install",
+    "check": "node scheduler.check.mjs"
   },
   "devDependencies": {
-    "deck-plugin-sdk": "^1.4.0",
-    "@types/react": "^19.0.0",
-    "lucide-react": "^1.0.0",
-    "react": "^19.0.0",
-    "typescript": "^5.0.0"
+    "@types/node": "^26.5.1",
+    "@types/react": "^19.2.18",
+    "deck-plugin-sdk": "file:D:/Flutter/personal/deck/sdk",
+    "esbuild": "^0.28.2",
+    "framer-motion": "^13.1.0",
+    "lucide-react": "^1.31.0",
+    "react": "^19.2.8",
+    "typescript": "^5.8.3"
   }
 }

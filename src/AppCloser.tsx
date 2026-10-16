@@ -21,8 +21,8 @@ export default function AppTimer() {
   const sched = useScheduler("app-closer");
 
   const [installed, setInstalled] = useState<AppProc[]>([]);
-  const refresh = () => listApps().then(setApps).catch(() => {});
-  const refreshInstalled = () => { if (installed.length === 0) listInstalled().then(setInstalled).catch(() => {}); };
+  const refresh = () => listApps().then(setApps).catch((e) => console.warn("[app-timer] app list failed", e));
+  const refreshInstalled = () => { if (installed.length === 0) listInstalled().then(setInstalled).catch((e) => console.warn("[app-timer] installed apps list failed", e)); };
   useEffect(() => { refresh(); /* eslint-disable-next-line */ }, []);
 
   const browse = async () => { const p = await pickExe(); if (p) setTarget(p); };

@@ -40,7 +40,7 @@ export function useScheduler(module: string) {
         const arr = Array.isArray(parsed.jobs) ? parsed.jobs : [];
         lastSynced.current = JSON.stringify(arr);
         setJobs(arr);
-      } catch { /* keep current */ }
+      } catch (e) { console.warn("[app-timer] jobs load failed", e); /* keep current */ }
     };
     load();
     listen<string[]>("config-changed", (e) => { if (e.payload.includes(module)) void load(); }).then((u) => (unlisten = u));

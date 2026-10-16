@@ -2,7 +2,18 @@ import { useEffect, useState } from "react";
 import { listen } from "../shim/event.js";
 import { AnimatePresence, motion } from "framer-motion";
 import { RotateCcw, X, Trash2 } from "lucide-react";
-import { configRead, historyDelete, historyClear, type HistoryEntry } from "../shim/bridge.js";
+import { configRead, configWrite, type HistoryEntry } from "../shim/bridge.js";
+
+// Fired timers, newest first, shared by both timer plugins and appended to by Deck's scheduler.
+const HISTORY = "data/deck/history";
+async function editHistory(edit: (all: HistoryEntry[]) => HistoryEntry[]) {
+  const t = await configRead(HISTORY);
+  let all: HistoryEntry[] = [];
+  try { all = t.trim() ? JSON.parse(t) : []; } catch { return; } // unreadable: leave it, never overwrite
+  await configWrite(HISTORY, JSON.stringify(edit(all), null, 2));
+}
+const historyDelete = (index: number) => editHistory((all) => all.filter((_, i) => i !== index));
+const historyClear = (module: string) => editHistory((all) => all.filter((e) => e.module !== module));
 import { fmtClock } from "./timeFormat";
 
 /** Persistent fired-timer history for one module, with Repeat / delete / clear. */
@@ -20,14 +31,14 @@ export function History({
   useEffect(() => {
     let unlisten: (() => void) | undefined;
     const load = () =>
-      configRead("history").then((t) => {
+      configRead(HISTORY).then((t) => {
         try {
           const all: HistoryEntry[] = t ? JSON.parse(t) : [];
           setRows(all.map((entry, index) => ({ entry, index })).filter((r) => r.entry.module === module));
         } catch { /* keep */ }
-      }).catch(() => {});
+      }).catch((e) => console.warn("[app-timer] history load failed", e));
     load();
-    listen<string[]>("config-changed", (e) => { if (e.payload.includes("history")) load(); }).then((u) => (unlisten = u));
+    listen<string[]>("config-changed", (e) => { if (e.payload.includes(HISTORY)) load(); }).then((u) => (unlisten = u));
     return () => unlisten?.();
   }, [module]);
 
