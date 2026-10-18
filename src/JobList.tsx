@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { Timer, X } from "lucide-react";
 import { type Job, countdown } from "./scheduler";
 
 export function JobList({
@@ -7,12 +7,15 @@ export function JobList({
 }: { jobs: Job[]; now: number; onRemove: (id: string) => void }) {
   if (jobs.length === 0) {
     return (
-      <p className="py-10 text-center text-sm text-text-muted">No active timers.</p>
+      <div className="flex items-start gap-2.5 rounded-lg border border-subtle bg-elev px-3 py-3 text-[12px] leading-relaxed text-text-muted">
+        <Timer size={16} className="mt-0.5 shrink-0" />
+        <span>No timers running. Pick when above and start one; it fires even with Deck closed.</span>
+      </div>
     );
   }
   return (
     <motion.div
-      className="flex flex-col gap-2"
+      className="flex flex-col"
       initial="hidden"
       animate="show"
       variants={{ show: { transition: { staggerChildren: 0.03 } } }}
@@ -28,31 +31,27 @@ export function JobList({
               variants={{ hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } }}
               exit={{ opacity: 0, x: 12 }}
               transition={{ type: "spring", stiffness: 400, damping: 32 }}
-              className="group flex items-center gap-3 rounded-lg border border-subtle bg-card px-4 py-3"
+              className="group flex h-6 items-center gap-2 rounded-md px-2 text-[12.5px] text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
             >
-              {/* accent bar */}
-              <span className="h-8 w-1 shrink-0 rounded-full" style={{ background: "var(--accent)" }} />
-              <div className="flex-1">
-                <div className="text-sm font-medium text-text-primary">{j.label}</div>
-                <div className="text-[11px] text-text-muted">
-                  {j.recurring
-                    ? "repeats " + j.days.map((d) => d.slice(0, 2)).join(", ")
-                    : "one-time"}
-                  {j.warned && <span style={{ color: "var(--warn)" }}> · warning shown</span>}
-                </div>
-              </div>
-              <div
-                className="font-mono text-lg tabular-nums"
-                style={{ color: soon ? "var(--warn)" : "var(--text-primary)" }}
+              <span className="shrink-0 truncate text-text-primary">{j.label}</span>
+              <span className="min-w-0 flex-1 truncate text-[11px] text-text-muted">
+                {j.recurring
+                  ? "repeats " + j.days.map((d) => d.slice(0, 2)).join(", ")
+                  : "one-time"}
+                {j.warned && <span className="text-amber-400"> · warning shown</span>}
+              </span>
+              <span
+                className="shrink-0 font-mono text-[12px] tabular-nums"
+                style={{ color: soon ? "rgb(var(--tone-amber-400))" : "var(--text-primary)" }}
               >
                 {countdown(rem)}
-              </div>
+              </span>
               <button
                 onClick={() => onRemove(j.id)}
-                className="rounded-md p-1.5 text-text-muted opacity-0 transition group-hover:opacity-100 hover:bg-elev hover:text-danger"
+                className="grid size-5 shrink-0 place-items-center rounded text-text-muted opacity-0 transition-colors hover:bg-white/10 hover:text-red-400 group-hover:opacity-100"
                 title="Cancel"
               >
-                <X size={16} />
+                <X size={13} />
               </button>
             </motion.div>
           );

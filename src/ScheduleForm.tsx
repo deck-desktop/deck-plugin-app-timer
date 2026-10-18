@@ -1,6 +1,9 @@
 import { useState, type ReactNode } from "react";
-import { Field, TimeInput, Segmented, DayPicker, PrimaryButton } from "../shim/ui.js";
+import { Field, Segmented, DayPicker } from "../shim/ui.js";
 import { type Job, type ScheduleMode, type Weekday, nextFire, parseHHmm } from "./scheduler";
+
+/** A text field on the elevated surface, lit in the accent while typing in it. */
+const field = "h-8 w-full rounded-lg border border-subtle bg-elev px-2.5 text-[12.5px] text-text-primary outline-none transition-colors placeholder:text-text-muted focus:border-[var(--accent)]";
 
 export interface ScheduleValue {
   mode: ScheduleMode;
@@ -69,22 +72,33 @@ export function ScheduleForm({
                   value={minutes}
                   onChange={(e) => setMinutes(e.target.value)}
                   inputMode="numeric"
-                  className="h-9 w-full rounded-md border border-strong bg-elev pl-3 pr-12 text-sm text-text-primary outline-none transition focus:border-accent focus:shadow-glow"
+                  className={field + " pr-10"}
                 />
-                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-text-muted">min</span>
+                <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] text-text-muted">min</span>
               </div>
             ) : (
-              <TimeInput value={time} onChange={setTime} className="w-full" />
+              // TimeInput's native picker, at the height of the fields beside it (TimeInput is taller).
+              <input
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                onClick={(e) => { try { (e.currentTarget as any).showPicker?.(); } catch { /* not supported */ } }}
+                className={"time-input cursor-pointer leading-none " + field}
+              />
             )}
           </div>
-          {/* Submit sits to the right of the When fields. */}
-          <PrimaryButton onClick={submit} className="ml-auto">{buttonLabel}</PrimaryButton>
+          {/* Submit sits to the right of the When fields: the one filled action on the screen. */}
+          <button onClick={submit}
+            className="ml-auto flex h-8 items-center rounded-lg px-4 text-[12.5px] font-medium text-white transition hover:brightness-110"
+            style={{ background: "var(--accent)" }}>
+            {buttonLabel}
+          </button>
         </div>
       </Field>
 
       {allowRecurring && mode === "atTime" && (
         <>
-          <label className="flex items-center gap-2 text-sm text-text-secondary">
+          <label className="flex items-center gap-2 text-[12.5px] text-text-secondary">
             <input
               type="checkbox"
               checked={recurring}
@@ -97,7 +111,7 @@ export function ScheduleForm({
         </>
       )}
 
-      {error && <span className="text-xs" style={{ color: "var(--danger)" }}>{error}</span>}
+      {error && <span className="text-[11.5px] text-red-400">{error}</span>}
     </div>
   );
 }
