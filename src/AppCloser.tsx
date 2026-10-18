@@ -76,8 +76,8 @@ export default function AppTimer() {
                         />
                       </div>
                       <button onClick={browse} title="Browse for .exe"
-                        className="grid h-9 w-10 shrink-0 place-items-center rounded-md border border-strong bg-elev text-text-secondary transition hover:text-text-primary">
-                        <FolderOpen size={16} />
+                        className="grid size-8 shrink-0 place-items-center rounded-lg border border-subtle bg-elev text-text-secondary transition-colors hover:border-strong hover:text-text-primary">
+                        <FolderOpen size={14} />
                       </button>
                     </>
                   )}
@@ -96,7 +96,7 @@ export default function AppTimer() {
         </div>
 
         {/* Active | History — stacked below the composer. */}
-        <div className="flex min-h-0 flex-col border-t border-subtle pt-5">
+        <div className="flex min-h-0 flex-col pt-1">
           <Tabs
             value={tab}
             onChange={setTab}

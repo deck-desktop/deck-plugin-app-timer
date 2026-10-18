@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { listen } from "../shim/event.js";
 import { AnimatePresence, motion } from "framer-motion";
-import { RotateCcw, X, Trash2 } from "lucide-react";
+import { RotateCcw, X, Trash2, History as HistoryIcon } from "lucide-react";
 import { configRead, configWrite, type HistoryEntry } from "../shim/bridge.js";
+import { ConfirmDialog, type ConfirmState } from "../shim/ui.js";
 
 // Fired timers, newest first, shared by both timer plugins and appended to by Deck's scheduler.
 const HISTORY = "data/deck/history";
@@ -27,6 +28,7 @@ export function History({
 }) {
   // Keep the global array index so a single-entry delete targets the right row.
   const [rows, setRows] = useState<{ entry: HistoryEntry; index: number }[]>([]);
+  const [confirm, setConfirm] = useState<ConfirmState | null>(null);
 
   useEffect(() => {
     let unlisten: (() => void) | undefined;
@@ -44,55 +46,62 @@ export function History({
 
   if (rows.length === 0) {
     return embedded ? (
-      <div className="flex h-full min-h-[120px] items-center justify-center rounded-xl border border-dashed border-subtle text-xs text-text-muted">
-        Nothing yet
+      <div className="flex items-start gap-2.5 rounded-lg border border-subtle bg-elev px-3 py-3 text-[12px] leading-relaxed text-text-muted">
+        <HistoryIcon size={16} className="mt-0.5 shrink-0" />
+        <span>Nothing has fired yet. Each timer lands here when it fires, with Repeat to set it again.</span>
       </div>
     ) : null;
   }
 
   return (
     <div className={embedded ? "flex h-full flex-col" : "mt-5"}>
-      <div className="mb-2 flex items-center justify-between">
-        {!embedded && <h2 className="text-xs font-semibold uppercase tracking-wide text-text-muted">History</h2>}
+      <div className="mb-1 flex h-7 items-center px-2">
+        {!embedded && <h2 className="text-[12px] font-medium text-text-secondary">History</h2>}
         <button
-          onClick={() => historyClear(module)}
-          className="ml-auto flex items-center gap-1 text-[11px] text-text-muted transition hover:text-danger"
+          onClick={() => setConfirm({
+            title: "Clear the timer history?",
+            body: "Every timer this tab has fired goes from the list. Timers still waiting to fire stay, and so does the other timer plugin's history.",
+            confirmLabel: "Clear",
+            onConfirm: () => void historyClear(module),
+          })}
+          className="ml-auto flex h-6 items-center gap-1 rounded-md px-1.5 text-[11.5px] text-text-muted transition-colors hover:bg-white/5 hover:text-red-400"
           title="Clear all history"
         >
           <Trash2 size={12} /> Clear
         </button>
       </div>
-      <div className="space-y-1.5">
+      <div className="flex flex-col">
         <AnimatePresence initial={false}>
           {rows.map(({ entry: e, index }) => (
             <motion.div
               key={`${e.firedAt}-${index}`}
               layout
               initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-              className="group flex items-center gap-2 rounded-lg border border-subtle bg-card px-3 py-2.5"
+              className="group flex h-6 items-center gap-2 rounded-md px-2 text-[12.5px] text-text-secondary transition-colors hover:bg-white/5 hover:text-text-primary"
             >
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-sm text-text-secondary">{describe(e)}</div>
-                <div className="text-[11px] text-text-muted">{fmtClock(e.firedAt)}</div>
+              <span className="min-w-0 flex-1 truncate">{describe(e)}</span>
+              <span className="shrink-0 font-mono text-[11px] tabular-nums text-text-muted">{fmtClock(e.firedAt)}</span>
+              <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+                <button
+                  onClick={() => onRepeat(e)}
+                  className="grid size-5 place-items-center rounded text-text-muted transition-colors hover:bg-white/10 hover:text-text-primary"
+                  title="Repeat"
+                >
+                  <RotateCcw size={13} />
+                </button>
+                <button
+                  onClick={() => historyDelete(index)}
+                  className="grid size-5 place-items-center rounded text-text-muted transition-colors hover:bg-white/10 hover:text-red-400"
+                  title="Remove"
+                >
+                  <X size={13} />
+                </button>
               </div>
-              <button
-                onClick={() => onRepeat(e)}
-                className="flex items-center gap-1 rounded-md px-2 py-1.5 text-xs text-text-muted transition hover:bg-elev hover:text-accent"
-                title="Repeat"
-              >
-                <RotateCcw size={13} />
-              </button>
-              <button
-                onClick={() => historyDelete(index)}
-                className="rounded-md p-1.5 text-text-muted opacity-0 transition group-hover:opacity-100 hover:bg-elev hover:text-danger"
-                title="Remove"
-              >
-                <X size={14} />
-              </button>
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
+      <ConfirmDialog state={confirm} onClose={() => setConfirm(null)} />
     </div>
   );
 }
