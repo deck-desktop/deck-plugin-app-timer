@@ -1,35 +1,31 @@
-# App Timer
+# App Timer for Deck
 
-Close an app after a delay or at a time, once or on chosen days.
+Close an app, or open one, after a delay or at a time. Open it from the **+** beside your tabs and
+choose **App Timer**.
 
-Split out of the Schedules plugin, which had Startup, App Timer and Power Timer as tabs. App Timer and Power Timer each carry their own copy of the timer code (the form, the list, the warning, history and `scheduler.ts`), because each is published as a repository that has to build on its own; a fix to one belongs in the other too.
+![App Timer](docs/screenshot.png)
 
-## What it exports
+- **Close** a running app: pick it from the list of running apps, or type its process name.
+- **Open** an app: search the installed apps, or browse for an `.exe`.
+- **When:** in a number of minutes, or at a time of day.
+- **Active** lists the timers waiting, each with its countdown and a button to cancel it.
+- **History** lists the timers that fired, with **Repeat**, **Remove** and **Clear all**. It is
+  shared with Power Timer and keeps the last 50.
 
-| Export | Where it renders |
-|---|---|
-| `default` | the tab |
-| `Settings` | the warning before a timer fires (shared with Power Timer) |
-| `mcp` | adding and cancelling app timers, for an agent |
+Deck's background scheduler fires the timers, so they fire with the tab closed or Deck's window
+hidden, as long as Deck is running. Timers are kept in Deck's config as `data/app-timer/app-closer`,
+and fired ones in the shared `data/deck/history`.
 
-## Checks
+## The warning
 
-```sh
-node plugins/app-timer/scheduler.check.mjs
-```
+Before a timer fires, Deck warns you. As a notification it has **Cancel timer**; with the tab open,
+a dialog also offers **Cancel**, **Do it now**, and **Dismiss**, which leaves the timer to fire on
+schedule. In Settings > Plugin settings > App Timer, choose how (a notification, Deck's window
+brought to the front, or none) and how many minutes before (1 to 15). Both are kept in Deck's own
+settings and apply to Power Timer as well.
 
-Working out when a timer next fires, classifying it, and the countdown - the arithmetic that
-decides whether a timer is right.
+## For agents
 
-## Build
-
-```sh
-node plugins/app-timer/build.mjs
-```
-
-See [../README.md](../README.md) for how the build and the shims work.
-
-## Install
-
-Copy `plugin.json`, `plugin.js` and `mcp.js` into `%APPDATA%\Deck\plugins\app-timer\` (`Deck-Dev` for a
-debug build) and restart Deck.
+The plugin brings `deck_add_app_timer` and `deck_cancel_app_timer` to Deck's MCP server. An agent
+can close an app after a number of minutes or at a time, including at a time on chosen days of the
+week, every week. `deck_list` shows each timer with the id that cancels it.
