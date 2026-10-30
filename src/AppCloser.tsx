@@ -46,7 +46,6 @@ export default function AppTimer() {
         {/* Composer — flat, card-free (matches Startup / Settings). */}
         <div className="flex flex-col">
           <ScheduleForm
-            allowRecurring={false}
             buttonLabel={action === "open" ? "Schedule open" : "Schedule close"}
             extraField={
               <Field

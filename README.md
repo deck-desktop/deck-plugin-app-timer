@@ -7,7 +7,8 @@ choose **App Timer**.
 
 - **Close** a running app: pick it from the list of running apps, or type its process name.
 - **Open** an app: search the installed apps, or browse for an `.exe`.
-- **When:** in a number of minutes, or at a time of day.
+- **When:** in a number of minutes, or at a time of day. A timer at a time can repeat on the days
+  of the week you tick, every week.
 - **Active** lists the timers waiting, each with its countdown and a button to cancel it.
 - **History** lists the timers that fired, with **Repeat**, **Remove** and **Clear all**. It is
   shared with Power Timer and keeps the last 50.

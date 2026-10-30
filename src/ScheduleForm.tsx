@@ -19,12 +19,11 @@ export interface ScheduleValue {
  * ready job spec (minus id/warned/module) or the form blocks with an error.
  */
 export function ScheduleForm({
-  extraField, buttonLabel, onSubmit, allowRecurring = true,
+  extraField, buttonLabel, onSubmit,
 }: {
   extraField: ReactNode;
   buttonLabel: string;
   onSubmit: (spec: Pick<Job, "mode" | "recurring" | "days" | "timeOfDay" | "delayMin" | "fireAt">) => string | null;
-  allowRecurring?: boolean;
 }) {
   const [mode, setMode] = useState<ScheduleMode>("delay");
   const [minutes, setMinutes] = useState("30");
@@ -96,7 +95,7 @@ export function ScheduleForm({
         </div>
       </Field>
 
-      {allowRecurring && mode === "atTime" && (
+      {mode === "atTime" && (
         <>
           <label className="flex items-center gap-2 text-[12.5px] text-text-secondary">
             <input
