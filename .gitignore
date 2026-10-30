@@ -1,5 +1,4 @@
 shim/
 types/
 node_modules/
-package-lock.json
 *.log
