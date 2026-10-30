@@ -5,5 +5,9 @@
   "icon": "AlarmClock",
   "color": "#c084fc",
   "version": "1.1.0",
-  "minDeck": "1.6.0"
+  "minDeck": "1.6.0",
+  "permissions": [
+    "system",
+    "deck"
+  ]
 }
