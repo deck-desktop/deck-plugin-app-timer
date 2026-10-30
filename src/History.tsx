@@ -5,8 +5,8 @@ import { RotateCcw, X, Trash2, History as HistoryIcon } from "lucide-react";
 import { configRead, configWrite, type HistoryEntry } from "../shim/bridge.js";
 import { ConfirmDialog, type ConfirmState } from "../shim/ui.js";
 
-// Fired timers, newest first, shared by both timer plugins and appended to by Deck's scheduler.
-const HISTORY = "data/deck/history";
+// Fired timers, newest first, appended to by Deck's scheduler, in this plugin's own data.
+const HISTORY = "history";
 async function editHistory(edit: (all: HistoryEntry[]) => HistoryEntry[]) {
   const t = await configRead(HISTORY);
   let all: HistoryEntry[] = [];
