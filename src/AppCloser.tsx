@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useScheduler } from "./useScheduler";
-import { listApps, listInstalled, pickExe, type AppProc, type HistoryEntry } from "../shim/bridge.js";
+import { listApps, listInstalled, pickExe, type AppProc, type HistoryEntry, isWindows } from "../shim/bridge.js";
 import { specFromHistory } from "./scheduler";
 import { Field, Segmented, Tabs } from "../shim/ui.js";
 import { AppCombo } from "./AppCombo";
@@ -50,7 +50,7 @@ export default function AppTimer() {
             extraField={
               <Field
                 label={action === "open" ? "App to open" : "Target app"}
-                hint={action === "open" ? "Path to the .exe (or a command)." : "Pick a running app or type a process name."}
+                hint={action === "open" ? (isWindows() ? "Path to the .exe (or a command)." : "Path to the program (or a command).") : "Pick a running app or type a process name."}
               >
                 <div className="flex gap-2">
                   <Segmented
@@ -74,7 +74,7 @@ export default function AppTimer() {
                           placeholder="Search installed apps…"
                         />
                       </div>
-                      <button onClick={browse} title="Browse for .exe"
+                      <button onClick={browse} title={isWindows() ? "Browse for .exe" : "Browse for a program"}
                         className="grid size-8 shrink-0 place-items-center rounded-lg border border-subtle bg-elev text-text-secondary transition-colors hover:border-strong hover:text-text-primary">
                         <FolderOpen size={14} />
                       </button>
