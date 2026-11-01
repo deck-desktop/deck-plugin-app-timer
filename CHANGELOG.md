@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 (2026-11-01)
+
+- Runs on Linux, where a timer closes a program by its process name. Needs Deck 1.15.0.
+
 ## 1.2.0 (2026-10-30)
 
 - A licence, this changelog, a README rewritten with a screenshot, and the permissions it uses
