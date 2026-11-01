@@ -6,7 +6,7 @@ function register(server, deck) {
     "deck_add_app_timer",
     "Schedule an app to close. Either delayMinutes (one-time) OR atTime 'HH:mm'. Recurring needs atTime + days.",
     {
-      target: z.string().describe("the app's process name, e.g. chrome.exe"),
+      target: z.string().describe("the app's process name, e.g. chrome.exe on Windows, firefox on Linux"),
       delayMinutes: z.number().int().positive().optional(),
       atTime: z.string().regex(/^([01]?\d|2[0-3]):[0-5]\d$/).optional(),
       recurring: z.boolean().default(false),
